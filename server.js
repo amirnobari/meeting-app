@@ -18,31 +18,39 @@ const opinions = {
 app.use("/peerjs", ExpressPeerServer(server, opinions))
 app.use(express.static("public"))
 
-app.get("/", (req, res) => {
-  res.redirect(`/${uuidv4()}`)
+app.get("/", (req, res) =>
+{
+  res.redirect(`/${ uuidv4() }`)
 })
 
-app.get("/:room", (req, res) => {
+app.get("/:room", (req, res) =>
+{
   res.render("room", { roomId: req.params.room })
 })
 
-io.on("connection", (socket) => {
-  socket.on("join-room", (roomId, userId, userName) => {
+io.on("connection", (socket) =>
+{
+  socket.on("join-room", (roomId, userId, userName) =>
+  {
     socket.join(roomId)
-    setTimeout(() => {
+    setTimeout(() =>
+    {
       socket.to(roomId).broadcast.emit("user-connected", userId)
     }, 1000)
-    socket.on("message", (message) => {
+    socket.on("message", (message) =>
+    {
       io.to(roomId).emit("createMessage", message, userName)
     })
 
     // When user disconnects, inform others and disconnect all calls related to this user
-    socket.on("disconnect", () => {
+    socket.on("disconnect", () =>
+    {
       socket.to(roomId).broadcast.emit("user-disconnected", userId)
     })
   })
 })
 
-server.listen(port, () => {
-  console.log(`server is running on port:${port}`)
+server.listen(port, () =>
+{
+  console.log(`server is running on port:${ port }`)
 })
